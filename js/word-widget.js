@@ -8,40 +8,63 @@ function countWords(self) {
 
 }
 
+// Displaying older sentences
+if(localStorage.getItem('wordWidget') != null) {
+  const senMain = JSON.parse(localStorage.getItem('wordWidget'));
+   //map the two arrays to a single array
+  let items = "";
+  for(let i = 0; i < senMain.length; i++) {
+    items += `<p>${senMain[i]}</p>`;
+
+
+  }
+  const sentence =  items;
+  console.log(sentence);
+
+  document.getElementById("list").innerHTML = sentence;
+}
+
+
+document.querySelector('#list').addEventListener('click', function(event){
+  if(event.target.nodeName === 'P'){
+    console.log(event.target.innerHTML)
+
+
+  }
+})
+
+function senDetails() {
+  const getSentence = document.getElementById("oldSentences").value;
+  console.log(getSentence);
+}
+
+
 
 function highlightWords() {
+
+  //value entered by user
   const getWords = document.querySelector( "#words").value;
-  //create a timestamp
 
-  var currentDate = new Date();
-  var timestamp = currentDate.toLocaleDateString() + "-" + currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
+  const localStorageContent = localStorage.getItem('wordWidget');
 
-  const senMap = new Map();
-  senMap.set("timestamp", timestamp);
-  senMap.set("sentence", getWords);
+  let SentenceWords;
 
-  const SentenceObj = Object.fromEntries(senMap);
-
-  const SentenceStr = JSON.stringify(SentenceObj);
-
-  if(localStorage.getItem('word-widget') === null) {
-    localStorage.setItem('word-widget', SentenceStr);
+  if(localStorageContent === null) {
+    SentenceWords = [];
   }
-  //update local storage
-  // var storeSen = [];
-  // var storeSen =  JSON.parse(localStorage.getItem('word-widget'));
-  //     storeSen.push(SentenceStr);
-  //     console.log(storeSen);
-  //     // Save the old and new data to local storage
-  //     localStorage.setItem('word-widget', JSON.stringify(storeSen));
+  else {
+    SentenceWords = JSON.parse(localStorageContent);
+  }
+  SentenceWords.push(getWords);
+  localStorage.setItem('wordWidget', JSON.stringify(SentenceWords));
 
-  console.log(getWords);
+
+
   let output = "";
   let words = getWords.split(" ");
   let replacementword = ""; 
   for (let i = 0; i < words.length; i++) {
     let word = words[i];
-
     if (word.length >= 4) {  
       replacementword = "<span class='lightext'>" + word + "</span>";  
     } 
@@ -49,16 +72,10 @@ function highlightWords() {
       replacementword = word;  
     }
     output = output + " " + replacementword + " ";
-
-        //hide all words shorter than 5 characters. 
-
-
-      }
-
+  }
 
       const checkBox = "<label for='myCheck'>Hide All Words Shorter Than 5 Characters :</label><input type='checkbox' id='myCheck' onclick='myFunction()'>";
       document.getElementById("demo").innerHTML = checkBox + "<div class='alert alert-dark' role='alert'>" + output + "</div>";
-
     }
 
 
